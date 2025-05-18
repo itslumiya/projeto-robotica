@@ -32,6 +32,7 @@
  * The arguments of the main function can be specified by the
  * "controllerArgs" field of the Robot node
  */
+
 int main(int argc, char **argv)
 {
   double LeituraSensorProx[QtddSensoresProx];
@@ -63,6 +64,7 @@ int main(int argc, char **argv)
   SensorProx[6] = wb_robot_get_device("ps6");
   SensorProx[7] = wb_robot_get_device("ps7");
 
+  // Configuração das caixas
   for (int c = 0; c < QtddCaixa; c++)
   {
     sprintf(nomeCaixa, "CAIXA%d", c + 1);
@@ -137,8 +139,10 @@ int main(int argc, char **argv)
     wb_motor_set_velocity(MotorEsquerdo, 6.28 * AceleradorEsquerdo);
     wb_motor_set_velocity(MotorDireito, 6.28 * AceleradorDireito);
 
+    // Aguarda o robô andar
     wb_robot_step(TIME_STEP);
 
+    // Verifica se a posição de alguma das caixas se moveu 0.001 m após o robô andar
     for (int c = 0; c < QtddCaixa; c++)
     {
       const double *PosicaoCaixaDepois = wb_supervisor_node_get_position(caixa[c]);
@@ -149,8 +153,6 @@ int main(int argc, char **argv)
       {
         EncontrouCaixaLeve = true;
         printf("\nEncontrou caixa leve!\n");
-        printf("CAIXA%d - ANTES: X: %.2f  Y: %.2f  Z: %.2f\n", c + 1, PosicaoCaixaAntes[c][0], PosicaoCaixaAntes[c][1], PosicaoCaixaAntes[c][2]);
-        printf("CAIXA%d - DEPOIS: X: %.2f  Y: %.2f  Z: %.2f\n", c + 1, PosicaoCaixaDepois[0], PosicaoCaixaDepois[1], PosicaoCaixaDepois[2]);
         break;
       }
     }
